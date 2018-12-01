@@ -1,3 +1,5 @@
+from itertools import cycle
+
 # --- Format data ---
 with open("01_data.txt") as f:
     lines = f.readlines()
@@ -10,14 +12,11 @@ print(sum(frequency_modifiers))
 # --- Part two ---
 reached_freqs = set()
 current_freq = 0
-found = False
-while not found:
-    for freq in frequency_modifiers:
-        if current_freq in reached_freqs:
-            print(current_freq)
-            found = True
-            break
-        else:
-             reached_freqs.add(current_freq)
-             current_freq += freq
+for freq in cycle(frequency_modifiers):
+    if current_freq in reached_freqs:
+        print(current_freq)
+        break
+    else:
+         reached_freqs.add(current_freq)
+         current_freq += freq
 
