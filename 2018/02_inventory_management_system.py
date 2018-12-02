@@ -45,7 +45,7 @@ What is the checksum for your list of box IDs?
 """
 
 # Format data
-with open("02_data.txt") as f:
+with open("data/02.txt") as f:
     lines = f.readlines()
 
 box_ids = [line.strip() for line in lines]

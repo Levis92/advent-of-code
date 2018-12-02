@@ -50,7 +50,7 @@ the changes in frequency have been applied?
 from itertools import cycle
 
 # --- Format data ---
-with open("01_data.txt") as f:
+with open("data/01.txt") as f:
     lines = f.readlines()
 
 frequency_modifiers = [int(line.strip()) for line in lines]
