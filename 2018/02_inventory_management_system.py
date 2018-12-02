@@ -67,6 +67,19 @@ for box_id in box_ids:
 
 print(two_times * three_times)
 
+# Alt. 2 with set instead of dict
+# (Inspired by solution created by Raoul Kent)
+double_char_ids = 0
+triple_char_ids = 0
+for chars in box_ids:
+    char_count = {chars.count(char) for char in set(chars)}
+    if 2 in char_count:
+        double_char_ids += 1
+    if 3 in char_count:
+        triple_char_ids += 1
+
+print(double_char_ids * triple_char_ids)
+
 """
 --- Part Two ---
 
