@@ -43,6 +43,7 @@ these together produces a checksum of 4 * 3 = 12.
 
 What is the checksum for your list of box IDs?
 """
+from collections import defaultdict
 
 # Format data
 with open("data/02.txt") as f:
@@ -56,9 +57,8 @@ box_ids = [line.strip() for line in lines]
 two_times = 0
 three_times = 0
 for box_id in box_ids:
-    letter_count = {}
+    letter_count = defaultdict(int)
     for letter in box_id:
-        letter_count.setdefault(letter, 0)
         letter_count[letter] += 1
     if 2 in letter_count.values():
         two_times += 1
