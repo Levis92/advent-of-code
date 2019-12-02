@@ -132,11 +132,10 @@ answer would be 1202.)
 # Format data
 with open("data/02.txt") as f:
     data_numbers = [int(number) for number in f.read().split(",")]
-
 """
 --- Part one ---
 """
-numbers = data_numbers
+numbers = [*data_numbers]
 numbers[1] = 12
 numbers[2] = 2
 
@@ -163,7 +162,38 @@ while len(numbers) > position:
     position = position + 4
 
 print(numbers[0])
-
 """
 --- Part two ---
 """
+
+done = False
+for noun in range(0, 100):
+    if done:
+        break
+    for verb in range(0, 100):
+        if done:
+            break
+        numbers = [*data_numbers]
+        numbers[1] = noun
+        numbers[2] = verb
+        position = 0
+        while len(numbers) > position:
+            if numbers[position] == 1:
+                set_val(position + 3,
+                        get_val(position + 1) + get_val(position + 2))
+            elif numbers[position] == 2:
+                set_val(position + 3,
+                        get_val(position + 1) * get_val(position + 2))
+            elif numbers[position] == 99:
+                break
+            else:
+                raise ValueError(
+                    f"Expected 1, 2 or 99 but got: {numbers[position]}")
+            position = position + 4
+            if numbers[0] == 19690720:
+                print(f"Noun: {noun}")
+                print(f"Verb: {verb}")
+                print(100 * noun + verb)
+                done = True
+                break
+
