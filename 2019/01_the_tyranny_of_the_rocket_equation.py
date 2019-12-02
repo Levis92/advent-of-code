@@ -87,12 +87,12 @@ print(fuelSum)
 """
 
 
-def calcModuleFuelReq(mass):
+def calc_module_fuel_req(mass):
     fuelMass = fuel(mass)
     if fuelMass < 0:
         return 0
-    return fuelMass + calcModuleFuelReq(fuelMass)
+    return fuelMass + calc_module_fuel_req(fuelMass)
 
 
-totalReq = sum(calcModuleFuelReq(line) for line in lines)
+totalReq = sum(calc_module_fuel_req(line) for line in lines)
 print(totalReq)
