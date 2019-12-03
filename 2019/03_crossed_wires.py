@@ -97,6 +97,7 @@ R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51
 U98,R91,D20,R16,D67,R40,U7,R15,U6,R7 = 410 steps
 What is the fewest combined steps the wires must take to reach an intersection?
 """
+from itertools import zip_longest
 
 
 # Format data
@@ -113,7 +114,7 @@ with open("data/03.txt") as f:
 """
 
 
-def get_movement_coords(d):
+def get_movement_offset(d):
     if d["direction"] == "U":
         return 0, d["steps"]
     if d["direction"] == "D":
@@ -124,37 +125,44 @@ def get_movement_coords(d):
         return d["steps"], 0
 
 
+def calc_position(val, step, mod):
+    return val if step is None else val + mod * step
+
+
+def mod(steps):
+    return -1 if steps < 0 else 1
+
+
+def steps_range(steps):
+    return range(1, abs(steps) + 1)
+
+
 def find_coordinates(directions):
     position = [0, 0]
     coordinates = []
+
+    def add_coords(steps_x, steps_y):
+        for x, y in zip_longest(steps_range(steps_x), steps_range(steps_y)):
+            x_pos = calc_position(position[0], x, mod(steps_x))
+            y_pos = calc_position(position[1], y, mod(steps_y))
+            coordinates.append((x_pos, y_pos))
+
     for direction in directions:
-        steps_x, steps_y = get_movement_coords(direction)
-        if steps_x > 0:
-            for i in range(1, steps_x + 1):
-                coordinates.append(f"{position[0] + i},{position[1]}")
-        if steps_x < 0:
-            for i in range(1, abs(steps_x) + 1):
-                coordinates.append(f"{position[0] - i},{position[1]}")
-        if steps_y > 0:
-            for i in range(1, steps_y + 1):
-                coordinates.append(f"{position[0]},{position[1] + i}")
-        if steps_y < 0:
-            for i in range(1, abs(steps_y) + 1):
-                coordinates.append(f"{position[0]},{position[1] - i}")
-        position[0] = position[0] + steps_x
-        position[1] = position[1] + steps_y
+        steps_x, steps_y = get_movement_offset(direction)
+        add_coords(steps_x, steps_y)
+        position[0] += steps_x
+        position[1] += steps_y
     return coordinates
 
 
 def calc_manhattan_distance(x, y):
-    return abs(int(x)) + abs(int(y))
+    return abs(x) + abs(y)
 
 
 first_coords = find_coordinates(first_wire)
 second_coords = find_coordinates(second_wire)
 intersections = set(first_coords) & set(second_coords)
-coords = [i.split(",") for i in intersections]
-print(min([calc_manhattan_distance(c[0], c[1]) for c in coords]))
+print(min([calc_manhattan_distance(c[0], c[1]) for c in intersections]))
 
 """
 --- Part two ---
