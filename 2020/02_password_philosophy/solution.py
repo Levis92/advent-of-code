@@ -20,7 +20,7 @@ with open("data.txt") as f:
 """
 is_valid = 0
 for pg in my_data:
-    nr_present = sum(1 for d in pg["password"] if d == pg["letter"])
+    nr_present = sum(1 for c in pg["password"] if c == pg["letter"])
     if pg["min_allowed"] <= nr_present <= pg["max_allowed"]:
         is_valid += 1
 
