@@ -25,7 +25,7 @@ for i, n in enumerate(my_numbers):
     for j, m in enumerate(my_numbers[i + 1 :]):
         if found_it:
             break
-        for k in my_numbers[j + 1 :]:
+        for k in my_numbers[i + j + 1 :]:
             if n + m + k == 2020:
                 print(n * m * k)
                 found_it = True
