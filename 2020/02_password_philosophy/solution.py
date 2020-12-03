@@ -1,50 +1,60 @@
 # Format data
-def format_data(data: str):
-    rule, password = data.split(": ")
+from enum import Enum
+from dataclasses import dataclass
+
+
+class PositionKey(str, Enum):
+    MIN = "min_pos"
+    MAX = "max_pos"
+
+
+@dataclass
+class Policy:
+    password: str
+    letter: str
+    min_pos: int
+    max_pos: int
+
+
+def format_data(line: str) -> Policy:
+    rule, password = line.strip().split(": ")
     rule_range, letter = rule.split(" ")
-    min_allowed, max_allowed = [int(i) for i in rule_range.split("-")]
-    return {
-        "password": password.strip(),
-        "letter": letter,
-        "min_allowed": min_allowed,
-        "max_allowed": max_allowed,
-    }
+    min_pos, max_pos = [int(n) for n in rule_range.split("-")]
+    return Policy(password, letter, min_pos, max_pos)
 
 
 with open("data.txt") as f:
-    my_data = [format_data(i) for i in f.readlines()]
+    my_policies = [format_data(line) for line in f.readlines()]
 
 
 """
 --- Part One ---
 """
-is_valid = 0
-for pg in my_data:
-    nr_present = sum(1 for c in pg["password"] if c == pg["letter"])
-    if pg["min_allowed"] <= nr_present <= pg["max_allowed"]:
-        is_valid += 1
 
-print(is_valid)
+
+def matches_count_policy(pol: Policy) -> bool:
+    return pol.min_pos <= pol.password.count(pol.letter) <= pol.max_pos
+
+
+is_valid_count = sum(1 for pol in my_policies if matches_count_policy(pol))
+
+print(is_valid_count)
 
 """
 --- Part Two ---
 """
 
 
-def is_present(data: dict, key: str) -> bool:
-    try:
-        return data["password"][data[key] - 1] == data["letter"]
-    except:
-        return False
+def has_letter(data: Policy, key: PositionKey) -> bool:
+    return data.password[getattr(data, key.value) - 1] == data.letter
 
 
-is_valid = 0
-for pg in my_data:
-    is_first_position = is_present(pg, "min_allowed")
-    is_second_position = is_present(pg, "max_allowed")
-    if (is_first_position or is_second_position) and not (
-        is_first_position and is_second_position
-    ):
-        is_valid += 1
+def matches_position_policy(pol: Policy) -> bool:
+    in_first_pos = has_letter(pol, PositionKey.MIN)
+    in_second_pos = has_letter(pol, PositionKey.MAX)
+    return (in_first_pos or in_second_pos) and not (in_first_pos and in_second_pos)
 
-print(is_valid)
+
+is_valid_count = sum(1 for pol in my_policies if matches_position_policy(pol))
+
+print(is_valid_count)

@@ -1,3 +1,5 @@
+from itertools import combinations
+
 # Format data
 with open("data.txt") as f:
     my_numbers = [int(i) for i in f.readlines()]
@@ -5,28 +7,16 @@ with open("data.txt") as f:
 """
 --- Part One ---
 """
-found_it = False
-for i, n in enumerate(my_numbers):
-    if found_it:
+for n, m in combinations(my_numbers, 2):
+    if n + m == 2020:
+        print(n * m)
         break
-    for m in my_numbers[i + 1 :]:
-        if n + m == 2020:
-            print(n * m)
-            found_it = True
-            break
+
 
 """
 --- Part Two ---
 """
-found_it = False
-for i, n in enumerate(my_numbers):
-    if found_it:
+for n, m, k in combinations(my_numbers, 3):
+    if n + m + k == 2020:
+        print(n * m * k)
         break
-    for j, m in enumerate(my_numbers[i + 1 :]):
-        if found_it:
-            break
-        for k in my_numbers[i + j + 1 :]:
-            if n + m + k == 2020:
-                print(n * m * k)
-                found_it = True
-                break
