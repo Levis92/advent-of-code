@@ -16,7 +16,7 @@ with open("data.txt") as f:
 
 
 """
---- PART ONE ---
+--- Part One ---
 """
 is_valid = 0
 for pg in my_data:
@@ -27,7 +27,7 @@ for pg in my_data:
 print(is_valid)
 
 """
---- PART TWO ---
+--- Part Two ---
 """
 
 
