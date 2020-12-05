@@ -16,9 +16,9 @@ class PassPort:
     cid: Optional[int] = None  # Country ID
 
     def is_valid(self):
-        present_fields = (
-            f is not None
-            for f in (
+        return all(
+            field is not None
+            for field in (
                 self.byr,
                 self.iyr,
                 self.eyr,
@@ -28,7 +28,6 @@ class PassPort:
                 self.pid,
             )
         )
-        return False not in present_fields
 
     def validate_hgt(self):
         val = int(val) if (val := str(self.hgt)[:-2]).isnumeric() else val
