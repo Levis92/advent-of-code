@@ -18,17 +18,7 @@ group_answers = [g.split("\n") for g in data.split("\n\n")]
 
 
 def count_group(group: List[str]) -> int:
-    if len(group) == 1:
-        return len(group[0])
-    total = 0
-    for l in group[0]:
-        is_present = True
-        for g in group[1:]:
-            if l not in g:
-                is_present = False
-        if is_present:
-            total += 1
-    return total
+    return sum(1 for l in group[0] if "".join(group).count(l) == len(group))
 
 
 print(sum(count_group(g) for g in group_answers))
