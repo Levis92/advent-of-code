@@ -1,6 +1,6 @@
 # Format data
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 import re
 
 
@@ -30,65 +30,50 @@ class PassPort:
         )
 
     def validate_hgt(self):
-        val = int(val) if (val := str(self.hgt)[:-2]).isnumeric() else val
+        height = int(h) if (h := str(self.hgt)[:-2]).isnumeric() else h
         unit = str(self.hgt)[-2:]
-        if unit == "cm":
-            return 150 <= val <= 193
-        if unit == "in":
-            return 59 <= val <= 76
-        return False
+        return (unit == "cm" and 150 <= height <= 193) or (
+            unit == "in" and 59 <= height <= 76
+        )
 
     def validate_hcl(self):
-        if not len(hcl := self.hcl) == 7:
-            return False
-        return hcl[0] == "#" and len(re.match("^[a-f0-9]*$", hcl[1:]).group(0)) == 6
+        match = re.match("^#[a-f0-9]*$", str(self.hcl))
+        return match and len(match.group()) == 7
 
     def strict_is_valid(self):
-        if not self.is_valid():
-            return False
-        if not (1920 <= self.byr <= 2002):
-            return False
-        if not (2010 <= self.iyr <= 2020):
-            return False
-        if not (2020 <= self.eyr <= 2030):
-            return False
-        if not self.validate_hgt():
-            return False
-        if not self.validate_hcl():
-            return False
-        if not self.ecl in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]:
-            return False
-        if not (len(self.pid) == 9 and self.pid.isnumeric()):
-            return False
-        return True
+        return all(
+            [
+                self.is_valid(),
+                self.byr and 1920 <= self.byr <= 2002,
+                self.iyr and 2010 <= self.iyr <= 2020,
+                self.eyr and 2020 <= self.eyr <= 2030,
+                self.validate_hgt(),
+                self.validate_hcl(),
+                self.ecl in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"],
+                self.pid and len(self.pid) == 9 and self.pid.isnumeric(),
+            ]
+        )
 
 
 with open("data.txt") as f:
-    lines = (l.strip() for l in f.readlines())
+    lines = (l.replace("\n", " ") for l in f.read().strip().split("\n\n"))
 
-passports = []
-current_passport = PassPort()
-for line in lines:
-    if line == "":
-        passports.append(current_passport)
-        current_passport = PassPort()
-    else:
-        fields = (
-            (key, val) for key, val in (pair.split(":") for pair in line.split(" "))
-        )
-        for key, val in fields:
-            setattr(
-                current_passport,
-                key,
-                int(val) if val.isnumeric() and key != "pid" else val,
-            )
-passports.append(current_passport)
+
+def get_value(key: str, val: str) -> Union[str, int]:
+    return int(val) if val.isnumeric() and key != "pid" else val
+
+
+def create_passport(line: str) -> PassPort:
+    fields = ((key, val) for key, val in (pair.split(":") for pair in line.split(" ")))
+    return PassPort(**{key: get_value(key, val) for key, val in fields})
+
+
+passports = [create_passport(l) for l in lines]
 
 
 """
 --- Part One ---
 """
-
 print(sum(1 for p in passports if p.is_valid()))
 
 
