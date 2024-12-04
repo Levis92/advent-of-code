@@ -1,0 +1,4 @@
+[package]
+name = "Day_4_Ceres_Search"
+version = "0.1.0"
+edition = "2021"
