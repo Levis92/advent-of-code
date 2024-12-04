@@ -66,14 +66,16 @@ fn get_diagonal_word<'a>(
 
 fn main() {
     let letters = format_data();
+
+    // Part 1
     let word = Vec::from(["X", "M", "A", "S"]);
+    let word_range = 0..word.len();
     let mut word_count = 0;
     for (row_index, row) in letters.iter().enumerate() {
         for (col_index, letter) in row.iter().enumerate() {
             if *letter != word[0] {
                 continue;
             }
-            let word_range = 0..word.len();
             let space_right = col_index <= row.len() - word.len();
             let space_left = col_index >= word.len() - 1;
             let space_down = row_index <= letters.len() - word.len();
@@ -125,7 +127,46 @@ fn main() {
             }
         }
     }
-    // Part 1
-    println!("{}", word_count);
+    println!("Count of {}: {}", word.join(""), word_count);
     assert_eq!(word_count, 2483);
+
+    // Part 2
+    let word = Vec::from(["M", "A", "S"]);
+    let word_range = 0..word.len();
+    let mut word_count = 0;
+    for (row_index, row) in letters.iter().enumerate() {
+        for (col_index, letter) in row.iter().enumerate() {
+            if *letter != word[1] {
+                continue;
+            }
+
+            let space_right = col_index < row.len() - 1;
+            let space_left = col_index > 0;
+            let space_down = row_index < letters.len() - 1;
+            let space_up = row_index > 0;
+            
+            if space_up && space_down && space_left && space_right {
+                let left_bottom_start = get_diagonal_word(&word_range, &letters, row_index + 1, col_index - 1, -1, 1);
+                let left_top_start = get_diagonal_word(&word_range, &letters, row_index - 1, col_index - 1, 1, 1);
+
+                let matches_one_direction = |mut found_word: Vec<&String>| {
+                    if word == found_word {
+                        return true;
+                    } else {
+                        found_word.reverse();
+                        return word == found_word;
+                    }
+                };
+
+                let left_bottom_matches = matches_one_direction(left_bottom_start);
+                let left_top_matches = matches_one_direction(left_top_start);
+
+                if left_bottom_matches && left_top_matches {
+                    word_count += 1;
+                }
+            }
+        }
+    }
+    println!("Count of X-MAS: {}", word_count);
+    assert_eq!(word_count, 1925);
 }
