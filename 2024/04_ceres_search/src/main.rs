@@ -43,7 +43,7 @@ fn main() {
     let letters = format_data();
 
     // Part 1
-    let word = Vec::from(["X", "M", "A", "S"]);
+    let word = vec!["X", "M", "A", "S"];
     let word_range = 0..word.len();
     let mut word_count = 0;
     for (row_index, row) in letters.iter().enumerate() {
@@ -85,7 +85,7 @@ fn main() {
     assert_eq!(word_count, 2483);
 
     // Part 2
-    let word = Vec::from(["M", "A", "S"]);
+    let word = vec!["M", "A", "S"];
     let word_range = 0..word.len();
     let mut word_count = 0;
     for (row_index, row) in letters.iter().enumerate() {
